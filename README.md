@@ -118,17 +118,43 @@ Saldo = (débitos das saídas + outros débitos)
 - Navegador atualizado (Chrome ou Edge).
 - Conexão com a internet, para carregar as bibliotecas que abrem o .zip e geram a planilha.
 
-## Manutenção (equipe de TI)
-
-Toda a ferramenta está no arquivo `index.html`. Para publicar uma nova versão:
+## Estrutura do projeto
 
 ```
-git add index.html
+apuracao-icms/
+├── index.html          Estrutura da página
+├── css/
+│   └── style.css       Visual (cores, tema escuro, layout, impressão)
+├── js/
+│   ├── tema.js         Tema claro/escuro (carregado antes da página aparecer)
+│   ├── utils.js        Formatação de valores, datas e armazenamento local
+│   ├── estado.js       Dados em memória: notas, empresa, período, regras
+│   ├── regras.js       Regras de CFOP e classificação entrada/saída
+│   ├── leitor-xml.js   Leitura dos XMLs, eventos de cancelamento e .zip
+│   ├── apuracao.js     Cálculo de débitos, créditos, saldo e ajustes
+│   ├── interface.js    Desenho da tela: saldo, gráfico e tabelas
+│   ├── exportar.js     Geração da planilha Excel formatada
+│   ├── exemplo.js      Notas fictícias do botão "Usar exemplo"
+│   └── app.js          Ligação dos botões e inicialização
+├── .gitignore          Impede o envio de XML, .zip e planilhas
+└── README.md
+```
+
+Os scripts são carregados no fim do `index.html` **nessa ordem**, porque cada arquivo usa funções dos anteriores. Ao criar um arquivo novo, inclua a tag `<script>` dele na posição certa.
+
+## Manutenção (equipe de TI)
+
+Para publicar uma nova versão:
+
+```
+git add .
 git commit -m "Descrição da alteração"
 git push
 ```
 
 O GitHub Pages atualiza o site em um ou dois minutos. Se a versão antiga continuar aparecendo, atualize com **Ctrl+F5**.
+
+O app funciona também abrindo o `index.html` direto do computador (dois cliques), útil para testar alterações antes de publicar.
 
 Bibliotecas externas utilizadas:
 
