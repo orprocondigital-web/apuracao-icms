@@ -51,6 +51,10 @@ button,input,select{font:inherit;color:inherit}
 .band .sub{margin:2px 0 0;color:var(--band-muted);font-size:.88rem}
 .band .org{font-size:.85rem;color:var(--band-muted)}
 .band .org b{color:var(--band-ink);font-weight:700}
+.band-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.btn-band{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:var(--band-ink);border-radius:8px;padding:7px 13px;font-weight:600;font-size:.88rem;cursor:pointer;transition:background .15s,border-color .15s}
+.btn-band:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.6)}
+.btn-band svg{width:15px;height:15px}
 
 .wrap{max-width:1280px;margin:-44px auto 0;padding:0 20px 48px;position:relative}
 .grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:20px;align-items:start}
@@ -180,7 +184,10 @@ footer.foot{text-align:center;color:var(--muted);font-size:.8rem;margin-top:28px
         <p class="sub">Prévia a partir dos XMLs de NF-e e NFC-e. A apuração oficial continua no Único.</p>
       </div>
     </div>
-    <div class="org"><b>Orprocon</b> · Departamento fiscal</div>
+    <div class="band-right">
+      <div class="org"><b>Orprocon</b> · Departamento fiscal</div>
+      <button class="btn-band hidden" id="btnLimparTopo" title="Remove as notas carregadas desta tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>Limpar notas</button>
+    </div>
   </div>
 </header>
 <div class="wrap">
@@ -529,6 +536,7 @@ function setDefaultPeriod(){
 /* ---------- renderização ---------- */
 function render(){
   const has=state.notas.size>0;
+  $("#btnLimparTopo").classList.toggle("hidden",!has);
   $("#emptyState").classList.toggle("hidden",has);
   $("#results").classList.toggle("hidden",!has);
   const info=$("#loadinfo");
@@ -538,8 +546,7 @@ function render(){
   if(state.cancel.size) extras.push(`${state.cancel.size} cancelamento(s)`);
   if(ig.resumos) extras.push(`${ig.resumos} resumo(s) sem itens ignorado(s)`);
   if(ig.invalidos) extras.push(`${ig.invalidos} arquivo(s) inválido(s)`);
-  info.innerHTML=`<strong>${state.notas.size}</strong> nota(s) carregada(s)${extras.length?" · "+extras.join(" · "):""}. <button class="btn link" id="btnLimpar">Limpar</button>`;
-  $("#btnLimpar").onclick=()=>{ state.notas.clear(); state.cancel.clear(); state.ignored={resumos:0,invalidos:0,outros:0}; state.empresa=""; $("#selEmpresa").innerHTML='<option value="">Carregue as notas primeiro</option>'; render(); };
+  info.innerHTML=`<strong>${state.notas.size}</strong> nota(s) carregada(s)${extras.length?" · "+extras.join(" · "):""}.`;
 
   const R=compute();
   renderHero(R); renderChart(R); renderCfop(R); renderNotas(R);
@@ -860,6 +867,14 @@ $("#fltTipo").onchange=()=>{ state.shown=100; render(); };
 $("#fltBusca").addEventListener("input",()=>{ state.shown=100; render(); });
 $("#btnMais").onclick=()=>{ state.shown+=100; render(); };
 $("#btnXlsx").onclick=exportXlsx;
+$("#btnLimparTopo").onclick=()=>{
+  if(!confirm("Limpar todas as notas carregadas?\n\nAs regras de CFOP e os ajustes manuais continuam salvos.")) return;
+  state.notas.clear(); state.cancel.clear(); state.ignored={resumos:0,invalidos:0,outros:0}; state.empresa=""; state.de=""; state.ate="";
+  $("#selEmpresa").innerHTML='<option value="">Carregue as notas primeiro</option>';
+  $("#dtDe").value=""; $("#dtAte").value=""; $("#fltBusca").value=""; $("#fltTipo").value=""; state.shown=100;
+  ["#ajSaldoAnt","#ajOutCred","#ajOutDeb"].forEach(x=>$(x).value="");
+  render(); window.scrollTo({top:0,behavior:"smooth"}); toast("Notas removidas da tela");
+};
 
 render();
 initDownloads();
