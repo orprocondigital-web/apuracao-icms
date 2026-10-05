@@ -57,8 +57,11 @@ button,input,select{font:inherit;color:inherit}
 @media (max-width:900px){.grid{grid-template-columns:1fr}}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
 aside .panel+.panel{margin-top:16px}
-aside{position:sticky;top:16px}
-@media (max-width:900px){aside{position:static}}
+aside{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto;overscroll-behavior:contain;padding-right:4px;margin-right:-4px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+aside::-webkit-scrollbar{width:8px}
+aside::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+aside::-webkit-scrollbar-track{background:transparent}
+@media (max-width:900px){aside{position:static;max-height:none;overflow:visible;padding-right:0;margin-right:0}}
 h2{font-size:1rem;margin:0 0 12px;font-weight:700;display:flex;align-items:center;gap:8px}
 h2 .ic,h3 .ic{width:26px;height:26px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:none}
 h2 .ic svg,h3 .ic svg{width:15px;height:15px}
@@ -67,7 +70,7 @@ h3{font-size:.98rem;margin:0 0 10px;font-weight:700;display:flex;align-items:cen
 .field label{font-size:.8rem;color:var(--muted);font-weight:600}
 .field input,.field select{border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:9px 11px;width:100%;min-width:0;transition:border-color .15s,background .15s}
 .field input:focus,.field select:focus{border-color:var(--accent);background:var(--surface);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row2>*{min-width:0}.field input[type=date]{padding:8px 6px 8px 9px;font-size:.9rem}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:.9rem;transition:background .15s,border-color .15s,filter .15s}
 .btn:hover{background:var(--soft);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
